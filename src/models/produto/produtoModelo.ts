@@ -41,25 +41,7 @@ export class ProdutoModelo{
     return new Promise( (resolve, reject)=>{
       
                           
-    const sqlEstoque=` SELECT  
-                          est.CODIGO,
-                          IF(est.estoque < 0, 0, est.estoque) AS ESTOQUE
-                        FROM 
-                          (SELECT
-                            P.CODIGO,
-                            (SUM(PS.ESTOQUE) - 
-                              (SELECT COALESCE(SUM((IF(PO.QTDE_SEPARADA > (PO.QUANTIDADE - PO.QTDE_MOV), PO.QTDE_SEPARADA, (PO.QUANTIDADE - PO.QTDE_MOV)) * PO.FATOR_QTDE) * IF(CO.TIPO = '5', -1, 1)), 0)
-                                FROM ${db_vendas}.cad_orca AS CO
-                                LEFT OUTER JOIN ${db_vendas}.pro_orca AS PO ON PO.ORCAMENTO = CO.CODIGO
-                                WHERE CO.SITUACAO IN ('AI', 'AP', 'FP')
-                                AND PO.PRODUTO = P.CODIGO)) AS estoque
-                          FROM ${db_estoque}.prod_setor AS PS
-                          LEFT JOIN  ${db_publico}.cad_prod AS P ON P.CODIGO = PS.PRODUTO
-                          INNER JOIN ${db_publico}.cad_pgru AS G ON P.GRUPO = G.CODIGO
-                          LEFT JOIN ${db_estoque}.setores AS S ON PS.SETOR = S.CODIGO
-                          WHERE S.EST_ATUAL = 'X' AND P.CODIGO = ${codigo}
-                          GROUP BY P.CODIGO) AS est;
-                        `
+    const sqlEstoque=` SELECT *  FROM prod_saldo WHERE CODIGO = ${codigo};`
     conn.query( sqlEstoque ,(err:any , result:any)=>{
       if(err){
         reject(err)

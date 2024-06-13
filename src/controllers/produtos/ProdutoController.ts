@@ -144,7 +144,7 @@ export class ProdutoController {
                                                 try{
                                                     const response = await api.config.put(`/produtos/${id}`,put)
                                                     console.log(response.status,"atualizado com sucesso!")
-                                                    
+                                                    console.log(response);
                                                 }catch(err){}
                    }else{
                                     try {

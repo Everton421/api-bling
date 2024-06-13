@@ -146,8 +146,8 @@
                         <form class="d-flex" id="no-print" action="/api/produtos" method="post">
                          
                                 <select id="produto" name="produto" class="form-select" aria-label="Default select example">
-                                    <option selected value="*" >enviar todos</option>
-    
+                                   <!-- <option selected value="*" >enviar todos</option>
+    -->                         <option selected value=" " >selecione </option>
                                     <% produtos.forEach((v)=>{ %>
                                         <option value="<%= v.CODIGO %> "><%=v.CODIGO %> <%=v.DESCRICAO %> </option>
     
