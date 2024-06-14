@@ -86,8 +86,8 @@ export class ProdutoController {
                     const post: ProdutoBling = {
                                     codigo: data.CODIGO,
                                     nome: data.DESCRICAO,
-                                    descricaoCurta: data.DESCR_CURTA,
-                                    descricaoComplementar: data.DESCR_LONGA,
+                                    descricaoCurta: data.DESCR_CURTA_SITE,
+                                    descricaoComplementar: data.DESCR_LONGA_SITE,
                                     tipo: 'P',
                                     unidade: 'un',
                                     preco: preco,
