@@ -39,10 +39,38 @@ async buscaPedidosBling(){
     await  api.configurarApi();
 
         let dadosPedidos;
-        try{
-        dadosPedidos = await api.config.get('/pedidos/vendas');
-        }catch(err) { throw err }
-        const arr = dadosPedidos.data.data
+
+        let pagina = 1;
+        let continuar = true;
+        let arr:any= [];
+        while(continuar){
+  
+          try{
+           
+                const response  = await api.config.get(`/pedidos/vendas`,{
+                  params: {
+                    pagina: pagina,
+                    situacao:2
+                  }
+                })  
+                let arrPedidos  = response.data.data
+  
+                    if( arrPedidos.length > 0){
+                     arr  =  arr.concat(arrPedidos);;
+                  pagina++;
+                    }else{
+                      continuar = false;
+                    }
+
+          }catch(err){
+              console.log("erro ao buscar pedidos "+ err)
+              continuar = false;
+          }
+  
+        }
+      ///  console.log(arr)
+
+
  
        for( const data of arr ){
    
@@ -180,7 +208,7 @@ async buscaPedidosBling(){
 
        }
 
-
+ 
 }
 
 async buscaPedidosErp(){
