@@ -12,7 +12,7 @@ async postIMGBB ( caminho:string , foto:string ){
 
     const apiKey = process.env.API_KEY_IMGBB
 
-    const expiration = 9000; // Tempo de expiração em segundos
+ //   const expiration = 9000; // Tempo de expiração em segundos
     const imagePath = path.join(caminho, foto); // Caminho para a imagem
   //  if(!imagePath || !caminho){
   //      return
@@ -28,7 +28,7 @@ async postIMGBB ( caminho:string , foto:string ){
      form.append('image', imageBase64);
  
      try {
-         const response = await axios.post(`https://api.imgbb.com/1/upload?expiration=${expiration}&key=${apiKey}`, form, {
+         const response = await axios.post(`https://api.imgbb.com/1/upload?key=${apiKey}`, form, {
              headers: {
                  ...form.getHeaders()
              }
