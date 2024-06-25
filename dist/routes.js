@@ -2,32 +2,56 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.router = void 0;
 const express_1 = require("express");
-const produtos_1 = require("./controllers/produtos/produtos");
-const orcamento_1 = require("./controllers/orcamento/orcamento");
-const cliente_1 = require("./controllers/cliente/cliente");
-const recebimento_1 = require("./controllers/recebimento/recebimento");
+require("dotenv/config");
+const tokenController_1 = require("./controllers/token/tokenController");
+const TokenMiddleware_1 = require("./Middlewares/TokenMiddleware");
+const ProdutoController_1 = require("./controllers/produtos/ProdutoController");
+const produtoApi_1 = require("./models/produtoApi/produtoApi");
+const produtoModelo_1 = require("./models/produto/produtoModelo");
+const pedidoController_1 = require("./controllers/pedido/pedidoController");
+const apiController_1 = require("./controllers/apiController/apiController");
+const config_1 = require("./models/configApi/config");
+const getProdutos_1 = require("./controllers/get_vinculo_produtos/getProdutos");
+const cron = require('node-cron');
 const router = (0, express_1.Router)();
 exports.router = router;
-router.get('/', (req, res) => {
-    return res.json({ "ok": true });
+router.get('/', TokenMiddleware_1.verificaToken, async (req, res) => {
+    res.render('index');
 });
-router.get('/produto/:produto', async (req, res) => {
-    const a = new produtos_1.produto();
-    const aux = await a.busca(req, res);
-    res.json(aux);
+router.get('/config', async (req, res) => {
+    const configApi = new apiController_1.apiController();
+    const objProdutos = new produtoModelo_1.ProdutoModelo();
+    const data = await configApi.buscaConfig();
+    const tabelas = await objProdutos.buscaTabelaDePreco();
+    res.render('config', { 'config': data, 'tabelas': tabelas });
 });
-router.get('/cliente/:cliente', async (req, res) => {
-    const obj = new cliente_1.Cliente();
-    const data = await obj.busca(req);
-    res.json(data);
+router.get('/produtos', TokenMiddleware_1.verificaToken, async (req, res) => {
+    const objProdutos = new produtoModelo_1.ProdutoModelo();
+    const objSincronizados = new produtoApi_1.ProdutoApi();
+    const sincronizados = await objSincronizados.buscaTodos();
+    const produtos = await objProdutos.buscaProdutos();
+    const tabelas = await objProdutos.buscaTabelaDePreco();
+    res.render('produtos', { 'produtos': produtos, 'sincronizados': sincronizados, 'tabelas': tabelas });
 });
-router.get('/forma_pagamento', new recebimento_1.Recebimento().busca);
-router.post('/cadastraOrcamento', async (req, res) => {
-    const obj = new orcamento_1.controlerOrcamento();
-    let a = await obj.cadastra(req, res);
+router.post('/api/produtos', TokenMiddleware_1.verificaToken, new ProdutoController_1.ProdutoController().enviaProduto);
+router.get('/callback', async (req, res, next) => {
+    const apitokenController = new tokenController_1.TokenController;
+    const token = apitokenController.obterToken(req, res, next);
 });
-router.post('/acerto', (req, res) => {
-    const a = new produtos_1.produto();
-    a.acerto(req, res, req.body);
+router.get('/pedidos', TokenMiddleware_1.verificaToken, new pedidoController_1.pedidoController().buscaPedidosBling);
+router.get('/estoque', TokenMiddleware_1.verificaToken, new ProdutoController_1.ProdutoController().enviaEstoque);
+router.post('/teste', async (req, res) => {
+    const au = JSON.stringify(req.body);
     //console.log(req.body)
+    const obj = new config_1.configApi();
+    let a = await obj.atualizaDados(req.body);
+});
+//router.get('/teste2',verificaToken, async (req,res)=>{
+//  const aux = new categoriaController();
+//  const main = await aux.validaCatedoria(2);
+//   console.log(main)
+//}) 
+router.get('/teste3', TokenMiddleware_1.verificaToken, async (req, res) => {
+    const aux = new getProdutos_1.getProdutos();
+    await aux.criarVinculo();
 });
