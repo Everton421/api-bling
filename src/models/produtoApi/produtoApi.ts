@@ -30,7 +30,7 @@ export class ProdutoApi{
                 
 
                 const sql = ` INSERT INTO ${database_api}.produtos VALUES
-                 ('${id_bling}','${descricaoSemAspas}','${codigo_sistema}', '${dataInsercao}') ON  DUPLICATE
+                 ('${id_bling}','${descricaoSemAspas}','${codigo_sistema}', '${dataInsercao}','0') ON  DUPLICATE
                  KEY UPDATE descricao ='${descricaoSemAspas}' , codigo_sistema ='${codigo_sistema}' 
                  ` 
 
