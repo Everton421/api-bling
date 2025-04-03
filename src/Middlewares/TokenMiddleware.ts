@@ -46,7 +46,7 @@ export async function verificaToken(req: Request, res: Response, next: NextFunct
                               const responseToken:any = await axios.post(`${url_bling}/oauth/token`, data, { headers });
                               console.log(responseToken);
                               if(responseToken.token === undefined || responseToken.token === null ){
-                               // console.log('erro ao oter um novo token utilizando o refres token')
+                                 console.log('erro ao oter um novo token utilizando o refres token')
                               }
 
                               if (responseToken.status === 200) {
